@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# Copyright (C) <fwhacking|gmail:com>
+
+DD=$(which dd)
+ENT=$(which ent)
+AWK=$(which awk)
+
+if [ -z $DD ]; then
+	echo "Please install 'dd'"
+	exit 1
+fi
+
+if [ -z $ENT ]; then
+	echo "Please install 'ent'"
+	exit 1
+fi
+
+if [ -z $AWK ]; then
+	echo "Please install 'awk'"
+	exit 1
+fi
+
+if [ $# -lt 3 ]; then
+	echo "Usage: $0 file offset length"
+	exit 1
+fi
+
+$DD if=$1 ibs=1 skip=$(($2)) count=$(($3)) 2> /dev/null | $ENT -t | $AWK -F',' '/1/ {printf "Entropy\t\t\t: %s" "\n" "Arithmetic mean\t\t: %s" "\n" "Monte Carlo Pi\t\t: %s" "\n" "Serial correlation\t: %s" "\n", $3, $5, $6, $7}'
